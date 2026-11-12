@@ -1,0 +1,69 @@
+<div class="main-container">
+  <aside class="filters-sidebar">
+    <h3>Фільтрувати за</h3>
+    
+    <div class="filter-group">
+      <strong>Категорія</strong>
+      <div style="margin-top: 8px;">
+        <label><input type="checkbox"> Доріжки</label>
+        <label><input type="checkbox"> Килими для вулиці</label>
+        <label><input type="checkbox"> Вхідні килимки</label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <strong>Ціна (грн)</strong>
+      <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+        <input type="number" placeholder="min" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
+        <span>-</span>
+        <input type="number" placeholder="max" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <strong>Розмір</strong>
+      <div style="margin-top: 8px;">
+        <label><input type="checkbox"> 5x8</label>
+        <label><input type="checkbox"> 8x10</label>
+        <label><input type="checkbox"> 9x12</label>
+      </div>
+    </div>
+  </aside>
+
+  <section class="catalog-content">
+    <div class="catalog-header-bar">
+      <div>
+        <span style="font-size: 14px; color: #4b5563;">Сортування за:</span>
+        <select class="sorting-select">
+          <option>За замовчуванням</option>
+          <option>Ціна: від низької до високої</option>
+          <option>Ціна: від високої до низької</option>
+          <option>Новинки</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="carpets-grid">
+      <% @carpets.each do |carpet| %>
+        <div class="carpet-card">
+          <div>
+            <div class="carpet-image-placeholder">Фото килима</div>
+            <h3 class="carpet-title"><%= carpet.title %></h3>
+            <p style="color: #6b7280; font-size: 13px; line-height: 1.4; margin-bottom: 12px;"><%= truncate(carpet.description, length: 60) %></p>
+          </div>
+          <div>
+            <div class="carpet-price"><%= number_to_currency(carpet.price, unit: "грн ", format: "%n %u") %></div>
+            <div class="card-actions">
+              <%= link_to "Детальніше", carpet_path(carpet), class: "btn-secondary" %>
+              <%= button_to "В кошик", "#", class: "btn-primary", method: :get %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
+      <%= paginate @carpets %>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Carpet Shop</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo">
+        <%= link_to "CARPET SHOP", root_path %>
+      </div>
+      <div class="header-title">Каталог килимів</div>
+      <div class="nav-links">
+        <% if defined?(Current) && Current.user %>
+          <%= link_to "Мій акаунт", "#" %>
+          <%= link_to "Вийти", "#", data: { turbo_method: :delete } %>
+        <% else %>
+          <%= link_to "Увійти", "#" %>
+          <%= link_to "Реєстрація", "#" %>
+        <% end %>
+        <%= link_to "Кошик (0)", "#", style: "font-weight: bold; color: #2563eb;" %>
+      </div>
+    </header>
+
+    <%= yield %>
+
+    <footer>
+      <div>
+        <strong>CARPET SHOP</strong><br>
+        вул. Головна, 123, Київ, Україна<br>
+        Тел: +380 77 123 45 67 | Email: info@carpetshop.ua
+      </div>
+      <div>
+        <%= link_to "Написати відгук або зворотний зв'язок", "#", class: "btn-primary", style: "display: inline-block; padding: 10px 16px;" %>
+      </div>
+    </footer>
+  </body>
+</html>
