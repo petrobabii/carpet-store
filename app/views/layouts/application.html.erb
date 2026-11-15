@@ -19,7 +19,7 @@
       <div style="display: flex; align-items: center; gap: 20px;">
         <% if authenticated? %>
           <% if Current.user&.admin? %>
-            <%= link_to "Управління товарами", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+            <%= link_to "Управління товарами", manage_carpets_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
             <%= link_to "Усі замовлення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
             <%= link_to "Звернення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
           <% else %>

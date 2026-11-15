@@ -1,0 +1,48 @@
+<%= form_with model: carpet, local: true do |form| %>
+  <% if carpet.errors.any? %>
+    <div class="auth-error">
+      <ul style="margin: 0; padding-left: 18px;">
+        <% carpet.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="auth-field">
+    <%= form.label :title, "Назва килима" %>
+    <%= form.text_field :title, required: true, placeholder: "Наприклад: Сучасний класичний килим" %>
+  </div>
+
+  <div class="auth-field">
+    <%= form.label :category, "Категорія" %>
+    <%= form.select :category, ["Кімнатний килим", "Доріжка", "Вхідний килим", "Килими для ванної"], {}, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff;" %>
+  </div>
+
+  <div class="auth-field">
+    <%= form.label :description, "Опис товару" %>
+    <%= form.text_area :description, rows: 4, required: true, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit;" %>
+  </div>
+
+  <div style="display: flex; gap: 15px;">
+    <div class="auth-field" style="flex: 1;">
+      <%= form.label :price, "Ціна (грн)" %>
+      <%= form.number_field :price, step: 0.01, required: true, placeholder: "3500" %>
+    </div>
+
+    <div class="auth-field" style="flex: 1;">
+      <%= form.label :stock, "Кількість на складі (шт.)" %>
+      <%= form.number_field :stock, required: true, placeholder: "10" %>
+    </div>
+  </div>
+
+  <div class="auth-field" style="margin-bottom: 20px;">
+    <%= form.label :image_url, "Назва файлу фото (з app/assets/images/) або URL" %>
+    <%= form.text_field :image_url, placeholder: "carpet_1.jpg" %>
+  </div>
+
+  <div style="display: flex; gap: 10px;">
+    <%= form.submit "Зберегти товар", class: "btn-primary" %>
+    <%= link_to "Скасувати", manage_carpets_path, class: "btn-secondary", style: "display: flex; align-items: center; justify-content: center; padding: 0 20px;" %>
+  </div>
+<% end %>

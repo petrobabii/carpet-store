@@ -2,13 +2,16 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :users, only: [:new, :create]
+
   root "carpets#index"
-  get "carpets/index"
-  get "carpets/show"
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :carpets, only: [:index, :show]
+  resources :carpets do
+    collection do
+      get :manage
+    end
+  end
 
   resource :cart, only: [:show] do
     post 'add/:carpet_id', to: 'carts#add', as: 'add_to'

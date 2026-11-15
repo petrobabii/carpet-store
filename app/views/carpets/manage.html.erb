@@ -1,0 +1,46 @@
+<div class="cart-container" style="max-width: 1000px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h2 class="cart-title" style="margin: 0;">Управління товарами</h2>
+    <%= link_to "+ Додати новий килим", new_carpet_path, class: "btn-cart-catalog" %>
+  </div>
+
+  <% if flash[:notice] %>
+    <div class="cart-notice"><%= flash[:notice] %></div>
+  <% end %>
+
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Фото</th>
+        <th>Назва</th>
+        <th>Категорія</th>
+        <th>Ціна</th>
+        <th>Залишок</th>
+        <th>Дії</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @carpets.each do |carpet| %>
+        <tr>
+          <td>
+            <% if carpet.image_url.present? %>
+              <%= image_tag carpet.image_url, style: "width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" %>
+            <% else %>
+              <span style="font-size: 12px; color: #9ca3af;">Немає</span>
+            <% end %>
+          </td>
+          <td class="cart-item-title"><%= carpet.title %></td>
+          <td><%= carpet.category.presence || "—" %></td>
+          <td class="cart-item-subtotal"><%= number_to_currency(carpet.price, unit: "грн ", format: "%n %u") %></td>
+          <td><%= carpet.stock %> шт.</td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <%= link_to "Редагувати", edit_carpet_path(carpet), class: "btn-secondary" %>
+              <%= button_to "Видалити", carpet_path(carpet), method: :delete, data: { turbo_confirm: "Ви впевнені, що хочете видалити цей килим?" }, class: "btn-cart-remove" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
