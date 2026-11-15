@@ -18,4 +18,10 @@ Rails.application.routes.draw do
     post 'decrease/:carpet_id', to: 'carts#decrease', as: 'decrease_from'
     delete 'remove/:carpet_id', to: 'carts#remove', as: 'remove_from'
   end
+
+  resources :orders, only: [:index, :new, :create, :update] do
+    collection do
+      get :manage
+    end
+  end
 end

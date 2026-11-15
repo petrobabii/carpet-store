@@ -20,10 +20,10 @@
         <% if authenticated? %>
           <% if Current.user&.admin? %>
             <%= link_to "Управління товарами", manage_carpets_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
-            <%= link_to "Усі замовлення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+            <%= link_to "Усі замовлення", manage_orders_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
             <%= link_to "Звернення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
           <% else %>
-            <%= link_to "Мої замовлення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+            <%= link_to "Мої замовлення", orders_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
           <% end %>
         <% end %>
 

@@ -1,0 +1,87 @@
+<div class="cart-container" style="max-width: 700px;">
+  <h2 class="cart-title">Оформлення замовлення</h2>
+
+  <% if flash[:alert] %>
+    <div class="auth-error"><%= flash[:alert] %></div>
+  <% end %>
+
+  <div style="background: #f9fafb; padding: 16px; border-radius: 6px; margin-bottom: 24px; border: 1px solid #e5e7eb;">
+    <h3 style="margin-top: 0; font-size: 16px;">Ваше замовлення:</h3>
+    <ul style="list-style: none; margin: 0; padding: 0; color: #374151;">
+      <% @cart_items.each do |item| %>
+        <ul style="margin-bottom: 6px;">
+          <strong><%= item[:carpet].title %></strong> — <%= item[:quantity] %> шт. × <%= number_to_currency(item[:carpet].price, unit: "грн", format: "%n %u") %>
+        </ul>
+      <% end %>
+    </ul>
+    <p style="margin: 12px 0 0; font-size: 18px; font-weight: bold; color: #111;">
+      До сплати: <%= number_to_currency(@total_price, unit: "грн", format: "%n %u") %>
+    </p>
+  </div>
+
+  <%= form_with model: @order, local: true do |form| %>
+    <% if @order.errors.any? %>
+      <div class="auth-error">
+        <ul style="margin: 0; padding-left: 18px;">
+          <% @order.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="auth-field">
+      <%= form.label :customer_name, "Прізвище та ім'я отримувача" %>
+      <%= form.text_field :customer_name, required: true, placeholder: "Сенишко Андрій" %>
+    </div>
+
+    <div class="auth-field">
+      <%= form.label :phone, "Номер телефону" %>
+      <%= form.text_field :phone, required: true, placeholder: "+380 88 123 45 67" %>
+    </div>
+
+    <div style="display: flex; gap: 15px;">
+      <div class="auth-field" style="flex: 1;">
+        <%= form.label :delivery_method, "Спосіб доставки" %>
+        <%= form.select :delivery_method, Order::DELIVERY_METHODS, {}, id: "delivery_select", style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff;" %>
+      </div>
+
+      <div class="auth-field" style="flex: 1;">
+        <%= form.label :payment_method, "Спосіб оплати" %>
+        <%= form.select :payment_method, Order::PAYMENT_METHODS, {}, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff;" %>
+      </div>
+    </div>
+
+    <div class="auth-field" id="address_block" style="margin-bottom: 20px;">
+      <%= form.label :address, "Адреса доставки (місто та номер відділення)" %>
+      <%= form.text_area :address, rows: 3, id: "address_input", required: true, placeholder: "м. Київ, відділення Нової Пошти №15", style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit;" %>
+    </div>
+
+    <div style="display: flex; gap: 12px;">
+      <%= form.submit "Підтвердити замовлення", class: "btn-primary" %>
+      <%= link_to "Повернутися в кошик", cart_path, class: "btn-secondary", style: "display: flex; align-items: center; padding: 0 20px;" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    const select = document.getElementById("delivery_select");
+    const addressBlock = document.getElementById("address_block");
+    const addressInput = document.getElementById("address_input");
+    if (!select) return;
+
+    function toggleAddress() {
+      if (select.value === "Самовивіз") {
+        addressBlock.style.display = "none";
+        addressInput.required = false;
+      } else {
+        addressBlock.style.display = "block";
+        addressInput.required = true;
+      }
+    }
+
+    select.addEventListener("change", toggleAddress);
+    toggleAddress();
+  });
+</script>

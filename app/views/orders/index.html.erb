@@ -1,0 +1,56 @@
+<div class="cart-container" style="max-width: 900px;">
+  <h2 class="cart-title">Мої замовлення</h2>
+
+  <% if flash[:notice] %>
+    <div class="cart-notice"><%= flash[:notice] %></div>
+  <% end %>
+
+  <% if @orders.empty? %>
+    <div class="cart-empty">
+      <p>У вас ще немає оформлених замовлень.</p>
+      <%= link_to "Перейти до каталогу", root_path, class: "btn-cart-catalog" %>
+    </div>
+  <% else %>
+    <% @orders.each do |order| %>
+      <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3f4f6; padding-bottom: 12px; margin-bottom: 14px;">
+          <div>
+            <strong style="font-size: 16px;">Замовлення #<%= order.id %></strong>
+            <span style="color: #6b7280; font-size: 13px; margin-left: 10px;">
+              від <%= order.created_at.strftime("%d.%m.%Y %H:%M") %>
+            </span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <% paid = order.payment_status == "Оплачено" %>
+            <span style="background: <%= paid ? '#dcfce7' : '#fee2e2' %>; color: <%= paid ? '#166534' : '#991b1b' %>; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;">
+              <%= order.payment_status %>
+            </span>
+            <span style="background: #eff6ff; color: #1d4ed8; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;">
+              <%= order.status %>
+            </span>
+          </div>
+        </div>
+
+        <ul style="list-style: none; margin: 0 0 14px; padding: 0; color: #111827;">
+          <% order.order_items.each do |item| %>
+            <li style="padding: 4px 0; font-size: 15px;">
+              <strong><%= item.carpet.title %></strong> — <%= item.quantity %> шт. × <%= number_to_currency(item.price, unit: "грн", format: "%n %u") %>
+            </li>
+          <% end %>
+        </ul>
+
+        <div style="background: #f9fafb; padding: 12px 14px; border-radius: 6px; font-size: 14px; color: #374151; display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;">
+          <div><strong>Доставка (<%= order.delivery_method %>):</strong> <%= order.address %></div>
+          <div><strong>Оплата:</strong> <%= order.payment_method %></div>
+          <div><strong>Отримувач:</strong> <%= order.customer_name %> (<%= order.phone %>)</div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; border-top: 1px solid #f3f4f6; padding-top: 12px;">
+          <strong style="font-size: 17px; color: #111;">
+            Разом до сплати: <%= number_to_currency(order.total_price, unit: "грн", format: "%n %u") %>
+          </strong>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

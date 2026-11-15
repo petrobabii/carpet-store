@@ -1,0 +1,60 @@
+<div class="cart-container" style="max-width: 1150px;">
+  <h2 class="cart-title">Усі замовлення клієнтів</h2>
+
+  <% if flash[:notice] %>
+    <div class="cart-notice"><%= flash[:notice] %></div>
+  <% end %>
+
+  <% if @orders.empty? %>
+    <p style="color: #6b7280;">Замовлень поки немає.</p>
+  <% else %>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th style="width: 110px;">№ / Дата</th>
+          <th>Клієнт, доставка та оплата</th>
+          <th>Товари та сума</th>
+          <th style="width: 180px;">Статуси</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td style="vertical-align: top;">
+              <strong>#<%= order.id %></strong><br>
+              <span style="font-size: 12px; color: #6b7280;"><%= order.created_at.strftime("%d.%m.%Y %H:%M") %></span>
+            </td>
+
+            <td style="font-size: 14px; vertical-align: top; line-height: 1.55;">
+              <div><strong><%= order.customer_name %></strong> (<%= order.phone %>)</div>
+              <div style="color: #6b7280; font-size: 13px; margin-bottom: 6px;"><%= order.user.email_address %></div>
+              <div><strong>Доставка (<%= order.delivery_method %>):</strong> <%= order.address %></div>
+              <div><strong>Оплата:</strong> <%= order.payment_method %></div>
+            </td>
+
+            <td style="font-size: 14px; vertical-align: top;">
+              <ul style="list-style: none; margin: 0 0 10px; padding: 0;">
+                <% order.order_items.each do |item| %>
+                  <li style="margin-bottom: 4px;">
+                    <%= item.carpet.title %> — <strong><%= item.quantity %> шт.</strong>
+                  </li>
+                <% end %>
+              </ul>
+              <div style="border-top: 1px solid #e5e7eb; padding-top: 8px; font-weight: 700; font-size: 15px; color: #111;">
+                Разом: <%= number_to_currency(order.total_price, unit: "грн", format: "%n %u") %>
+              </div>
+            </td>
+
+            <td style="vertical-align: top;">
+              <%= form_with model: order, url: order_path(order), method: :patch, local: true, style: "display: flex; flex-direction: column; gap: 6px;" do |f| %>
+                <%= f.select :payment_status, Order::PAYMENT_STATUSES, {}, style: "padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" %>
+                <%= f.select :status, Order::STATUSES, {}, style: "padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" %>
+                <%= f.submit "Зберегти", class: "btn-primary", style: "padding: 6px 10px; font-size: 13px; width: 100%;" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

@@ -53,7 +53,11 @@
       <h3 class="cart-total-heading">
         Загальна сума: <span class="cart-total-amount"><%= number_to_currency(total_sum, unit: "грн ", format: "%n %u") %></span>
       </h3>
-      <%= link_to "Оформити замовлення", "#", class: "btn-checkout" %>
+      <% if authenticated? %>
+        <%= link_to "Оформити замовлення", new_order_path, class: "btn-checkout" %>
+      <% else %>
+        <%= link_to "Увійдіть, щоб оформити замовлення", new_session_path, class: "btn-checkout" %>
+      <% end %>
     </div>
   <% end %>
 </div>
