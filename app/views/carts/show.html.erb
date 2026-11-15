@@ -1,0 +1,59 @@
+<div class="cart-container">
+  <h2 class="cart-title">Кошик покупок</h2>
+
+  <% if flash[:notice] %>
+    <div class="cart-notice">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
+  <% if @cart_items.empty? %>
+    <p class="cart-empty-text">Ваш кошик наразі порожній.</p>
+    <div class="cart-empty-actions">
+      <%= link_to "Перейти до каталогу", root_path, class: "btn-cart-catalog" %>
+    </div>
+  <% else %>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Назва килима</th>
+          <th>Ціна</th>
+          <th>Кількість</th>
+          <th>Сума</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% total_sum = 0 %>
+        <% @cart_items.each do |item| %>
+          <% carpet = item[:carpet] %>
+          <% quantity = item[:quantity] %>
+          <% subtotal = carpet.price * quantity %>
+          <% total_sum += subtotal %>
+          <tr>
+            <td class="cart-item-title"><%= carpet.title %></td>
+            <td><%= number_to_currency(carpet.price, unit: "грн ", format: "%n %u") %></td>
+            <td>
+              <div class="cart-quantity-controls">
+                <%= button_to "-", decrease_from_cart_path(carpet_id: carpet.id), method: :post, class: "btn-qty" %>
+                <span class="cart-qty-value"><%= quantity %> шт.</span>
+                <%= button_to "+", add_to_cart_path(carpet_id: carpet.id), method: :post, class: "btn-qty" %>
+              </div>
+            </td>
+            <td class="cart-item-subtotal"><%= number_to_currency(subtotal, unit: "грн ", format: "%n %u") %></td>
+            <td>
+              <%= button_to "Видалити", remove_from_cart_path(carpet_id: carpet.id), method: :delete, class: "btn-cart-remove" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="cart-summary">
+      <h3 class="cart-total-heading">
+        Загальна сума: <span class="cart-total-amount"><%= number_to_currency(total_sum, unit: "грн ", format: "%n %u") %></span>
+      </h3>
+      <%= link_to "Оформити замовлення", "#", class: "btn-checkout" %>
+    </div>
+  <% end %>
+</div>

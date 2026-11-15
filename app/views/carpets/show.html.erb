@@ -2,20 +2,21 @@
   <%= link_to "← Назад до каталогу", carpets_path, style: "color: #3498db; text-decoration: none; font-size: 14px;" %>
   
   <div style="background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 30px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-    <h1 style="margin-top: 0; color: #333;"><%= @carpet.title %></h1>
+    <% if @carpet.image_url.present? %>
+      <%= image_tag @carpet.image_url, alt: @carpet.title, class: "carpet-detail-image" %>
+    <% end %>
+  
+    <h2 style="margin-top: 0; color: #333;"><%= @carpet.title %></h2>
     <p style="color: #666; font-size: 16px; line-height: 1.5;"><%= @carpet.description %></p>
-    
+
     <div style="font-size: 24px; font-weight: bold; color: #2c3e50; margin: 20px 0;">
       <%= @carpet.price %> грн
     </div>
     
     <p style="font-size: 14px; color: #666;">В наявності: <strong><%= @carpet.stock %> шт.</strong></p>
     
-    <!-- Тут згодом буде кнопка додавання в кошик -->
     <div style="margin-top: 30px;">
-      <button style="background: #27ae60; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer;">
-        Додати в кошик
-      </button>
+      <%= button_to "У кошик", add_to_cart_path(carpet_id: @carpet.id), method: :post, style: "background: #007bff; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 500;" %>
     </div>
   </div>
 </div>

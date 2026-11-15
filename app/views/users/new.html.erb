@@ -1,0 +1,39 @@
+<div class="auth-container">
+  <h2 class="auth-title">Реєстрація акаунта</h2>
+
+  <% if @user.errors.any? %>
+    <div class="auth-error">
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @user, local: true do |form| %>
+    <div class="auth-field">
+      <%= form.label :email_address, "Email адреса" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, placeholder: "example@gmail.com" %>
+    </div>
+
+    <div class="auth-field">
+      <%= form.label :password, "Пароль" %>
+      <%= form.password_field :password, required: true, placeholder: "••••••••" %>
+    </div>
+
+    <div class="auth-field" style="margin-bottom: 20px;">
+      <%= form.label :password_confirmation, "Підтвердження пароля" %>
+      <%= form.password_field :password_confirmation, required: true, placeholder: "••••••••" %>
+    </div>
+
+    <div>
+      <%= form.submit "Зареєструватися", class: "btn-primary" %>
+    </div>
+  <% end %>
+
+  <div class="auth-footer">
+    Вже маєте акаунт? 
+    <%= link_to "Увійти", new_session_path %>
+  </div>
+</div>

@@ -2,52 +2,72 @@
   <aside class="filters-sidebar">
     <h3>Фільтрувати за</h3>
     
-    <div class="filter-group">
-      <strong>Категорія</strong>
-      <div style="margin-top: 8px;">
-        <label><input type="checkbox"> Доріжки</label>
-        <label><input type="checkbox"> Килими для вулиці</label>
-        <label><input type="checkbox"> Вхідні килимки</label>
-      </div>
-    </div>
+    <form action="<%= root_path %>" method="get">
+      <% if params[:sort].present? %>
+        <input type="hidden" name="sort" value="<%= params[:sort] %>">
+      <% end %>
 
-    <div class="filter-group">
-      <strong>Ціна (грн)</strong>
-      <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
-        <input type="number" placeholder="min" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
-        <span>-</span>
-        <input type="number" placeholder="max" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
+      <div class="filter-group">
+        <strong>Категорія</strong>
+        <div style="margin-top: 8px;">
+          <% ["Кімнатний килим", "Доріжка", "Вхідний килим", "Килими для ванної"].each do |cat| %>
+            <label>
+              <input type="checkbox" name="categories[]" value="<%= cat %>" <%= "checked" if params[:categories]&.include?(cat) %>>
+              <%= cat %>
+            </label>
+          <% end %>
+        </div>
       </div>
-    </div>
 
-    <div class="filter-group">
-      <strong>Розмір</strong>
-      <div style="margin-top: 8px;">
-        <label><input type="checkbox"> 5x8</label>
-        <label><input type="checkbox"> 8x10</label>
-        <label><input type="checkbox"> 9x12</label>
+      <div class="filter-group">
+        <strong>Ціна (грн)</strong>
+        <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+          <input type="number" name="min_price" value="<%= params[:min_price] %>" placeholder="min" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
+          <span>-</span>
+          <input type="number" name="max_price" value="<%= params[:max_price] %>" placeholder="max" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
+        </div>
       </div>
-    </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+        <button type="submit" class="btn-primary" style="padding: 10px; font-size: 14px;">Застосувати</button>
+        <% if params[:categories].present? || params[:min_price].present? || params[:max_price].present? %>
+          <%= link_to "Скинути фільтри", root_path(sort: params[:sort]), style: "text-align: center; font-size: 13px; color: #6b7280; text-decoration: none;" %>
+        <% end %>
+      </div>
+    </form>
   </aside>
 
   <section class="catalog-content">
-    <div class="catalog-header-bar">
-      <div>
-        <span style="font-size: 14px; color: #4b5563;">Сортування за:</span>
-        <select class="sorting-select">
-          <option>За замовчуванням</option>
-          <option>Ціна: від низької до високої</option>
-          <option>Ціна: від високої до низької</option>
-          <option>Новинки</option>
+    <h2 class="catalog-heading">Каталог товарів</h2>
+
+    <div class="sort-bar">
+      <form action="<%= root_path %>" method="get" style="display: flex; align-items: center; gap: 10px; margin: 0;">
+        <% Array(params[:categories]).each do |cat| %>
+          <input type="hidden" name="categories[]" value="<%= cat %>">
+        <% end %>
+        <% if params[:min_price].present? %>
+          <input type="hidden" name="min_price" value="<%= params[:min_price] %>">
+        <% end %>
+        <% if params[:max_price].present? %>
+          <input type="hidden" name="max_price" value="<%= params[:max_price] %>">
+        <% end %>
+
+        <span>Сортування за:</span>
+        <select name="sort" onchange="this.form.submit()">
+          <option value="default" <%= "selected" if params[:sort].blank? || params[:sort] == "default" %>>За замовчуванням</option>
+          <option value="price_asc" <%= "selected" if params[:sort] == "price_asc" %>>Ціна: від низької до високої</option>
+          <option value="price_desc" <%= "selected" if params[:sort] == "price_desc" %>>Ціна: від високої до низької</option>
         </select>
-      </div>
+      </form>
     </div>
 
     <div class="carpets-grid">
       <% @carpets.each do |carpet| %>
         <div class="carpet-card">
           <div>
-            <div class="carpet-image-placeholder">Фото килима</div>
+            <% if carpet.image_url.present? %>
+              <%= image_tag carpet.image_url, alt: carpet.title, class: "carpet-card-image" %>
+            <% end %>
             <h3 class="carpet-title"><%= carpet.title %></h3>
             <p style="color: #6b7280; font-size: 13px; line-height: 1.4; margin-bottom: 12px;"><%= truncate(carpet.description, length: 60) %></p>
           </div>
@@ -55,7 +75,7 @@
             <div class="carpet-price"><%= number_to_currency(carpet.price, unit: "грн ", format: "%n %u") %></div>
             <div class="card-actions">
               <%= link_to "Детальніше", carpet_path(carpet), class: "btn-secondary" %>
-              <%= button_to "В кошик", "#", class: "btn-primary", method: :get %>
+              <%= button_to "У кошик", add_to_cart_path(carpet_id: carpet.id), method: :post, style: "background: #007bff; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 500;" %>
             </div>
           </div>
         </div>

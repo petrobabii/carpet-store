@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Carpet Shop</title>
+    <title>Carpet Store</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -12,19 +12,29 @@
 
   <body>
     <header>
-      <div class="logo">
-        <%= link_to "CARPET SHOP", root_path %>
+      <div>
+        <%= link_to "CARPET STORE", root_path, style: "font-weight: bold; text-decoration: none; font-size: 1.2rem; color: #111; letter-spacing: 1px;" %>
       </div>
-      <div class="header-title">Каталог килимів</div>
-      <div class="nav-links">
-        <% if defined?(Current) && Current.user %>
-          <%= link_to "Мій акаунт", "#" %>
-          <%= link_to "Вийти", "#", data: { turbo_method: :delete } %>
-        <% else %>
-          <%= link_to "Увійти", "#" %>
-          <%= link_to "Реєстрація", "#" %>
+
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <% if authenticated? %>
+          <% if Current.user&.admin? %>
+            <%= link_to "Управління товарами", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+            <%= link_to "Усі замовлення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+            <%= link_to "Звернення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+          <% else %>
+            <%= link_to "Мої замовлення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+          <% end %>
         <% end %>
-        <%= link_to "Кошик (0)", "#", style: "font-weight: bold; color: #2563eb;" %>
+
+        <%= link_to "Кошик (#{session[:cart]&.values&.sum || 0})", cart_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
+        
+        <% if authenticated? %>
+          <span style="color: #666; font-size: 14px;"><%= Current.user.email_address %></span>
+          <%= button_to "Вийти", session_path, method: :delete, form: { style: "display:inline;" }, style: "background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;" %>
+        <% else %>
+          <%= link_to "Увійти", new_session_path, style: "background: #007bff; color: white; padding: 6px 16px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 14px;" %>
+        <% end %>
       </div>
     </header>
 
@@ -32,9 +42,9 @@
 
     <footer>
       <div>
-        <strong>CARPET SHOP</strong><br>
-        вул. Головна, 123, Київ, Україна<br>
-        Тел: +380 77 123 45 67 | Email: info@carpetshop.ua
+        <strong>CARPET STORE</strong><br>
+        вул. Незалежності, 123, Київ, Україна<br>
+        Тел: +380 77 123 45 67 | Email: info@carpetstore.ua
       </div>
       <div>
         <%= link_to "Написати відгук або зворотний зв'язок", "#", class: "btn-primary", style: "display: inline-block; padding: 10px 16px;" %>
