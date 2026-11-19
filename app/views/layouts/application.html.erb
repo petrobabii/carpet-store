@@ -21,7 +21,7 @@
           <% if Current.user&.admin? %>
             <%= link_to "Управління товарами", manage_carpets_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
             <%= link_to "Усі замовлення", manage_orders_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
-            <%= link_to "Звернення", "#", style: "text-decoration: none; color: #445; font-weight: 500;" %>
+            <%= link_to "Звернення", manage_feedbacks_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
           <% else %>
             <%= link_to "Мої замовлення", orders_path, style: "text-decoration: none; color: #445; font-weight: 500;" %>
           <% end %>
@@ -47,7 +47,7 @@
         Тел: +380 77 123 45 67 | Email: info@carpetstore.ua
       </div>
       <div>
-        <%= link_to "Написати відгук або зворотний зв'язок", "#", class: "btn-primary", style: "display: inline-block; padding: 10px 16px;" %>
+        <%= link_to "Зворотний зв'язок", new_feedback_path, class: "btn-primary", style: "display: inline-block; padding: 10px 16px;" %>
       </div>
     </footer>
   </body>

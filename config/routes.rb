@@ -25,4 +25,10 @@ Rails.application.routes.draw do
       get :manage
     end
   end
+
+  resources :feedbacks, only: [:new, :create, :update, :destroy] do
+    collection do
+      get :manage
+    end
+  end
 end

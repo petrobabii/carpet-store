@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_183035) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_191420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_183035) do
     t.datetime "updated_at", null: false
     t.string "image_url"
     t.string "category"
+  end
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "last_name"
+    t.string "first_name"
+    t.string "phone"
+    t.text "message"
+    t.text "admin_reply"
+    t.datetime "replied_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -80,6 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_183035) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "feedbacks", "users"
   add_foreign_key "order_items", "carpets"
   add_foreign_key "order_items", "orders"
   add_foreign_key "orders", "users"
