@@ -1,5 +1,5 @@
 class FeedbacksController < ApplicationController
-  allow_unauthenticated_access only: %i[ new create ]
+  allow_unauthenticated_access only: %i[ new ]
   before_action :require_admin, only: %i[ manage update destroy ]
 
   def new
@@ -8,13 +8,12 @@ class FeedbacksController < ApplicationController
   end
 
   def create
-    @feedback = Feedback.new(feedback_params)
-    @feedback.user = Current.user if authenticated?
+    @feedback = Current.user.feedbacks.build(feedback_params)
 
     if @feedback.save
       redirect_to new_feedback_path, notice: "Дякуємо! Ваше звернення надіслано адміністратору."
     else
-      @my_feedbacks = authenticated? ? Current.user.feedbacks.order(created_at: :desc) : []
+      @my_feedbacks = Current.user.feedbacks.order(created_at: :desc)
       render :new, status: :unprocessable_entity
     end
   end

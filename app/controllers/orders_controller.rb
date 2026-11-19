@@ -33,6 +33,8 @@ class OrdersController < ApplicationController
     @order.status = "В обробці"
     @order.payment_status = "Не оплачено"
 
+    stock_error = nil
+
     ActiveRecord::Base.transaction do
       @order.save!
 
@@ -41,7 +43,8 @@ class OrdersController < ApplicationController
         qty = item[:quantity]
 
         if carpet.stock < qty
-          raise ActiveRecord::Rollback, "Недостатньо товару «#{carpet.title}» на складі."
+          stock_error = "Недостатньо товару «#{carpet.title}» на складі (доступно: #{carpet.stock} шт.)."
+          raise ActiveRecord::Rollback
         end
 
         @order.order_items.create!(
@@ -54,11 +57,11 @@ class OrdersController < ApplicationController
       end
     end
 
-    if @order.persisted?
+    if @order.persisted? && stock_error.nil?
       session[:cart] = {}
       redirect_to orders_path, notice: "Замовлення ##{@order.id} успішно оформлено!"
     else
-      flash.now[:alert] = "Не вдалося оформити замовлення. Перевірте введені дані та залишки товарів."
+      flash.now[:alert] = stock_error || "Не вдалося оформити замовлення. Перевірте введені дані та залишки товарів."
       render :new, status: :unprocessable_entity
     end
   end

@@ -8,11 +8,18 @@ class CartsController < ApplicationController
   def add
     carpet = Carpet.find(params[:carpet_id])
     cart = session[:cart] ||= {}
-    
-    cart[carpet.id.to_s] = (cart[carpet.id.to_s] || 0) + 1
-    session[:cart] = cart
+    id_str = carpet.id.to_s
+    current_qty = cart[id_str].to_i
 
-    redirect_to cart_path
+    if carpet.stock <= 0
+      redirect_to cart_path, alert: "На жаль, «#{carpet.title}» наразі немає в наявності."
+    elsif current_qty >= carpet.stock
+      redirect_to cart_path, alert: "Неможливо додати більше — в наявності лише #{carpet.stock} шт. товару «#{carpet.title}»."
+    else
+      cart[id_str] = current_qty + 1
+      session[:cart] = cart
+      redirect_to cart_path
+    end
   end
 
   def decrease
@@ -43,9 +50,20 @@ class CartsController < ApplicationController
 
   def current_cart_items
     cart = session[:cart] ||= {}
-    cart.map do |carpet_id, quantity|
+    items = []
+
+    cart.dup.each do |carpet_id, quantity|
       carpet = Carpet.find_by(id: carpet_id)
-      carpet ? { carpet: carpet, quantity: quantity } : nil
-    end.compact
+      if carpet && carpet.stock > 0
+        actual_qty = [quantity.to_i, carpet.stock].min
+        cart[carpet_id] = actual_qty
+        items << { carpet: carpet, quantity: actual_qty }
+      else
+        cart.delete(carpet_id)
+      end
+    end
+
+    session[:cart] = cart
+    items
   end
 end

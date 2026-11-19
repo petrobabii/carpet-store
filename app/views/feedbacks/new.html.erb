@@ -7,7 +7,7 @@
     <div style="flex: 1; min-width: 280px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px;">
       <h2 style="margin-top: 0; font-size: 22px; color: #111827;">Контакти магазину</h2>
       <p style="color: #4b5563; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-        Маєте запитання щодо асортименту, розмірів чи доставки килимів? Зв'яжіться з нами зручним способом або заповніть форму праворуч.
+        Маєте запитання щодо асортименту чи доставки килимів? Зв'яжіться з нами зручним способом або заповніть форму праворуч.
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 14px; font-size: 15px; color: #1f2937;">
@@ -62,7 +62,11 @@
           <%= form.text_area :message, rows: 4, required: true, placeholder: "Опишіть ваше запитання або побажання...", style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit;" %>
         </div>
 
-        <%= form.submit "Надіслати", class: "btn-primary" %>
+        <% if authenticated? %>
+          <%= form.submit "Надіслати", class: "btn-primary" %>
+        <% else %>
+          <%= link_to "Увійдіть, щоб надіслати звернення", new_session_path, class: "btn-primary", style: "display: block; text-align: center; text-decoration: none;" %>
+        <% end %>
       <% end %>
     </div>
   </div>

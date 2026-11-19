@@ -7,6 +7,12 @@
     </div>
   <% end %>
 
+  <% if flash[:alert] %>
+    <div class="auth-error">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
   <% if @cart_items.empty? %>
     <p class="cart-empty-text">Ваш кошик наразі порожній.</p>
     <div class="cart-empty-actions">
@@ -30,14 +36,24 @@
           <% quantity = item[:quantity] %>
           <% subtotal = carpet.price * quantity %>
           <% total_sum += subtotal %>
+          <% max_reached = quantity >= carpet.stock %>
           <tr>
-            <td class="cart-item-title"><%= carpet.title %></td>
+            <td class="cart-item-title">
+              <%= carpet.title %>
+              <div style="font-size: 12px; color: #6b7280; font-weight: normal; margin-top: 2px;">
+                Доступно на складі: <%= carpet.stock %> шт.
+              </div>
+            </td>
             <td><%= number_to_currency(carpet.price, unit: "грн ", format: "%n %u") %></td>
             <td>
               <div class="cart-quantity-controls">
                 <%= button_to "-", decrease_from_cart_path(carpet_id: carpet.id), method: :post, class: "btn-qty" %>
                 <span class="cart-qty-value"><%= quantity %> шт.</span>
-                <%= button_to "+", add_to_cart_path(carpet_id: carpet.id), method: :post, class: "btn-qty" %>
+                <% if max_reached %>
+                  <button disabled title="Досягнуто максимальної кількості на складі" class="btn-qty" style="opacity: 0.4; cursor: not-allowed;">+</button>
+                <% else %>
+                  <%= button_to "+", add_to_cart_path(carpet_id: carpet.id), method: :post, class: "btn-qty" %>
+                <% end %>
               </div>
             </td>
             <td class="cart-item-subtotal"><%= number_to_currency(subtotal, unit: "грн ", format: "%n %u") %></td>

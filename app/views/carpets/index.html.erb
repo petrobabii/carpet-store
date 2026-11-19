@@ -42,6 +42,10 @@
       <div class="cart-notice"><%= flash[:notice] %></div>
     <% end %>
 
+    <% if flash[:alert] %>
+      <div class="auth-error"><%= flash[:alert] %></div>
+    <% end %>
+
     <h2 class="catalog-heading">Каталог товарів</h2>
 
     <div class="sort-bar">
@@ -100,12 +104,12 @@
               <%= carpet.stock > 0 ? "В наявності" : "Немає в наявності" %>
             </div>
 
-            <div class="card-actions">
-              <%= link_to "Детальніше", carpet_path(carpet), class: "btn-secondary" %>
+            <div class="card-actions" style="display: flex; align-items: stretch; gap: 10px;">
+              <%= link_to "Детальніше", carpet_path(carpet), class: "btn-secondary", style: "flex: 1; display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; box-sizing: border-box; font-size: 14px; font-weight: 500; text-align: center;" %>
               <% if carpet.stock > 0 %>
-                <%= button_to "У кошик", add_to_cart_path(carpet_id: carpet.id), method: :post, style: "background: #007bff; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 500;" %>
+                <%= button_to "У кошик", add_to_cart_path(carpet_id: carpet.id), method: :post, form: { style: "flex: 1; display: flex; margin: 0;" }, style: "width: 100%; background: #007bff; color: white; border: 1px solid #007bff; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; box-sizing: border-box;" %>
               <% else %>
-                <button disabled style="background: #9ca3af; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: not-allowed; font-weight: 500;">Немає</button>
+                <button disabled style="flex: 1; background: #9ca3af; color: white; border: 1px solid #9ca3af; padding: 10px 14px; border-radius: 6px; cursor: not-allowed; font-size: 14px; font-weight: 500; box-sizing: border-box;">Немає</button>
               <% end %>
             </div>
           </div>
