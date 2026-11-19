@@ -1,22 +1,174 @@
-<div style="max-width: 700px; margin: 40px auto; font-family: sans-serif; padding: 0 20px;">
-  <%= link_to "← Назад до каталогу", carpets_path, style: "color: #3498db; text-decoration: none; font-size: 14px;" %>
-  
-  <div style="background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 30px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-    <% if @carpet.image_url.present? %>
-      <%= image_tag @carpet.image_url, alt: @carpet.title, class: "carpet-detail-image" %>
-    <% end %>
-  
-    <h2 style="margin-top: 0; color: #333;"><%= @carpet.title %></h2>
-    <p style="color: #666; font-size: 16px; line-height: 1.5;"><%= @carpet.description %></p>
+<div style="max-width: 1200px; margin: 25px auto 60px; padding: 0 30px; box-sizing: border-box;">
+  <div style="margin-bottom: 24px;">
+    <%= link_to "← Назад", root_path, style: "display: inline-flex; align-items: center; gap: 6px; color: #4b5563; text-decoration: none; font-size: 15px; font-weight: 500;" %>
+  </div>
 
-    <div style="font-size: 24px; font-weight: bold; color: #2c3e50; margin: 20px 0;">
-      <%= @carpet.price %> грн
+  <% if flash[:notice] %>
+    <div class="cart-notice"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert] %>
+    <div class="auth-error"><%= flash[:alert] %></div>
+  <% end %>
+
+  <div style="display: flex; align-items: flex-start; gap: 45px; flex-wrap: wrap; margin-bottom: 50px;">
+    <%# Ліва колонка: фото %>
+    <div style="width: 450px; max-width: 100%; flex-shrink: 0; background: #f3f4f6; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb;">
+      <% if @carpet.image_url.present? %>
+        <%= image_tag @carpet.image_url, style: "width: 100%; height: auto; max-height: 460px; object-fit: cover; display: block;" %>
+      <% else %>
+        <div style="height: 360px; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+          Зображення відсутнє
+        </div>
+      <% end %>
     </div>
-    
-    <p style="font-size: 14px; color: #666;">В наявності: <strong><%= @carpet.stock %> шт.</strong></p>
-    
-    <div style="margin-top: 30px;">
-      <%= button_to "У кошик", add_to_cart_path(carpet_id: @carpet.id), method: :post, style: "background: #007bff; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 500;" %>
+
+    <div style="flex: 1; min-width: 300px; padding-top: 4px;">
+      <% if @carpet.category.present? %>
+        <span style="display: inline-block; background: #eff6ff; color: #2563eb; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 12px;">
+          <%= @carpet.category %>
+        </span>
+      <% end %>
+
+      <h1 style="margin: 0 0 14px; font-size: 30px; color: #111827; line-height: 1.2;"><%= @carpet.title %></h1>
+
+      <div style="font-size: 26px; font-weight: 700; color: #111827; margin-bottom: 10px;">
+        <%= number_to_currency(@carpet.price, unit: "грн", format: "%n %u") %>
+      </div>
+
+      <div style="margin-bottom: 10px; font-size: 14px; font-weight: 600; color: <%= @carpet.stock > 0 ? '#16a34a' : '#dc2626' %>;">
+        <%= @carpet.stock > 0 ? "В наявності: #{@carpet.stock} шт." : "Немає в наявності" %>
+      </div>
+
+      <div style="color: #6b7280; font-size: 13px; margin-bottom: 18px;">
+        Код товару: CRP-<%= @carpet.id.to_s.rjust(3, '0') %>
+      </div>
+
+      <p style="color: #374151; line-height: 1.65; font-size: 15px; margin-bottom: 24px; max-width: 600px;">
+        <%= @carpet.description %>
+      </p>
+
+      <% if @carpet.stock > 0 %>
+        <%= button_to "Додати до кошика", add_to_cart_path(carpet_id: @carpet.id), method: :post, class: "btn-primary", style: "width: auto; padding: 12px 28px; font-size: 16px;" %>
+      <% else %>
+        <button disabled style="background: #9ca3af; color: #fff; border: none; padding: 12px 28px; border-radius: 6px; font-size: 16px; cursor: not-allowed;">
+          Немає в наявності
+        </button>
+      <% end %>
     </div>
   </div>
+
+  <div style="max-width: 750px; border-top: 1px solid #e5e7eb; padding-top: 32px;">
+    <h2 style="margin: 0 0 8px; font-size: 24px; color: #111827;">Відгуки</h2>
+
+    <div style="font-size: 15px; color: #374151; margin-bottom: 20px;">
+      Рейтинг: <strong><%= format("%.1f", @carpet.average_rating) %> / 5</strong>
+      <span style="color: #f59e0b;">★</span>
+      <span style="color: #6b7280;">(<%= @carpet.reviews_count %>)</span>
+    </div>
+
+    <% if @reviews.empty? %>
+      <p style="color: #6b7280; margin-bottom: 24px;">Поки що немає жодного відгуку. Будьте першим!</p>
+    <% else %>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;">
+        <% @reviews.each do |rev| %>
+          <div style="background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <strong style="color: #111827; font-size: 15px;"><%= rev.user.email_address.split('@').first %></strong>
+                <span style="color: #f59e0b; letter-spacing: 1px; font-size: 15px;">
+                  <%= "★" * rev.rating %><span style="color: #d1d5db;"><%= "★" * (5 - rev.rating) %></span>
+                </span>
+                <span style="color: #9ca3af; font-size: 13px;"><%= rev.created_at.strftime("%d.%m.%Y") %></span>
+              </div>
+
+              <% if authenticated? && (Current.user&.admin? || rev.user == Current.user) %>
+                <%= button_to "Видалити", carpet_review_path(@carpet, rev), method: :delete, data: { turbo_confirm: "Видалити відгук?" }, style: "background: none; border: none; color: #dc2626; font-size: 12px; cursor: pointer; padding: 0;" %>
+              <% end %>
+            </div>
+
+            <% if rev.comment.present? %>
+              <p style="margin: 10px 0 0; color: #374151; font-size: 14px; line-height: 1.5;"><%= rev.comment %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if authenticated? %>
+      <% already_reviewed = @carpet.reviews.exists?(user_id: Current.user.id) %>
+      <% if already_reviewed %>
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; color: #4b5563; font-size: 14px;">
+          Ви вже залишили відгук на цей килим.
+        </div>
+      <% else %>
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px;">
+          <h3 style="margin: 0 0 14px; font-size: 17px;">Залишити відгук</h3>
+
+          <%= form_with model: [@carpet, @review], local: true do |f| %>
+            <% if @review.errors.any? %>
+              <div class="auth-error">
+                <ul style="margin: 0; padding-left: 18px;">
+                  <% @review.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div style="margin-bottom: 14px;">
+              <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px;">Ваша оцінка:</label>
+              <div id="star-rating" style="display: inline-flex; gap: 6px; font-size: 28px; cursor: pointer;">
+                <% (1..5).each do |star| %>
+                  <label style="cursor: pointer; margin: 0;">
+                    <%= f.radio_button :rating, star, style: "display: none;", class: "star-radio" %>
+                    <span class="star-icon" data-value="<%= star %>" style="color: #d1d5db; transition: color 0.15s;">★</span>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <%= f.label :comment, "Коментар", id: "comment-label", style: "display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px;" %>
+              <%= f.text_area :comment, rows: 3, id: "review-comment-input", placeholder: "Поділіться враженнями про якість, ворс чи колір килима...", style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;" %>
+            </div>
+
+            <%= f.submit "Опублікувати відгук", class: "btn-primary", style: "width: auto; padding: 10px 22px;" %>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <div style="margin-top: 10px;">
+        <%= link_to "Увійдіть, щоб залишити відгук", new_session_path, class: "btn-primary", style: "display: inline-block; width: auto; padding: 12px 26px;" %>
+      </div>
+    <% end %>
+  </div>
 </div>
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    const stars = document.querySelectorAll(".star-icon");
+    const radios = document.querySelectorAll(".star-radio");
+    const commentLabel = document.getElementById("comment-label");
+    const commentInput = document.getElementById("review-comment-input");
+    if (!stars.length) return;
+
+    function updateStars(selectedVal) {
+      stars.forEach(s => {
+        const val = parseInt(s.dataset.value);
+        s.style.color = val <= selectedVal ? "#f59e0b" : "#d1d5db";
+      });
+      if (selectedVal > 0 && selectedVal <= 2) {
+        commentLabel.textContent = "Коментар (обов'язково):";
+        commentInput.required = true;
+      } else {
+        commentLabel.textContent = "Коментар (необов'язково):";
+        commentInput.required = false;
+      }
+    }
+
+    radios.forEach(radio => {
+      if (radio.checked) updateStars(parseInt(radio.value));
+      radio.addEventListener("change", () => updateStars(parseInt(radio.value)));
+    });
+  });
+</script>

@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     collection do
       get :manage
     end
+    resources :reviews, only: [:create, :destroy]
   end
 
   resource :cart, only: [:show] do

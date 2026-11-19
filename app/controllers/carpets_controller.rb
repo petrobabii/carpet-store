@@ -4,7 +4,7 @@ class CarpetsController < ApplicationController
   before_action :set_carpet, only: %i[ show edit update destroy ]
 
   def index
-    carpets = Carpet.all
+    carpets = Carpet.includes(:reviews).all
 
     # Фільтр за категоріями
     if params[:categories].present?
@@ -35,6 +35,8 @@ class CarpetsController < ApplicationController
   end
 
   def show
+    @reviews = @carpet.reviews.includes(:user).order(created_at: :desc)
+    @review = Review.new
   end
 
   def manage
