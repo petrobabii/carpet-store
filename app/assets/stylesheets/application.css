@@ -1,4 +1,3 @@
-/* Загальні стилі */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
@@ -10,7 +9,7 @@ body {
   min-height: 100vh;
 }
 
-/* Шапка (Header) */
+/* Header */
 header {
   background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
@@ -45,7 +44,7 @@ header {
   color: #2563eb;
 }
 
-/* Основний макет із сайдбаром та каталогом */
+/* Головна сторінка */
 .main-container {
   display: flex;
   align-items: stretch;
@@ -84,7 +83,7 @@ header {
   color: #374151;
 }
 
-/* Каталог товарів праворуч */
+/* Каталог товарів */
 .catalog-content {
   flex: 1;
   padding: 20px 32px 48px 32px;
@@ -111,7 +110,7 @@ header {
   cursor: pointer;
 }
 
-/* Сітка товарів (грід на 6 карток) */
+/* Сітка товарів */
 .carpets-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -327,7 +326,7 @@ footer {
   font-size: 14px;
 }
 
-/* === Стилі сторінки кошика === */
+/* Сторінка кошика */
 .cart-container {
   max-width: 800px;
   margin: 40px auto;
@@ -372,7 +371,6 @@ footer {
   background: #0056b3;
 }
 
-/* Сторінка кошика */
 .cart-table {
   width: 100%;
   border-collapse: collapse;
@@ -476,7 +474,7 @@ footer {
   background: #218838;
 }
 
-/* Зображень килимів */
+/* Зображення килимів */
 .carpet-card-image {
   width: 100%;
   height: 220px;
